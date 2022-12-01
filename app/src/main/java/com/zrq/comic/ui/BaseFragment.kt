@@ -19,7 +19,7 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mainModel = ViewModelProvider(requireActivity()).get(MainModel::class.java)
+        mainModel = ViewModelProvider(requireActivity())[MainModel::class.java]
         mBinding = providedViewBinding(inflater, container)
         initData()
         initEvent()

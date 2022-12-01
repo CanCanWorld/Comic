@@ -42,6 +42,7 @@ class ChapterFragment : BaseFragment<FragmentChapterBinding>(), OnItemClickListe
             rvChapter.layoutManager = LinearLayoutManager(requireContext())
             Glide.with(this@ChapterFragment).load(comic?.cover).into(ivHead)
         }
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -51,13 +52,14 @@ class ChapterFragment : BaseFragment<FragmentChapterBinding>(), OnItemClickListe
         httpGet(url) { success, msg ->
             if (success) {
                 val chapter = Gson().fromJson(msg, Chapter::class.java)
-                if (chapter?.data?.chapterList != null) {
+                val data = chapter?.data?.chapterList
+                if (data != null) {
                     if (chapter.data.chapterList.size == 0) {
                         Toast.makeText(requireContext(), "空", Toast.LENGTH_SHORT).show()
                         return@httpGet
                     }
                     list.clear()
-                    list.addAll(chapter.data.chapterList)
+                    list.addAll(data)
                     Handler(Looper.getMainLooper()).post {
                         adapter.notifyDataSetChanged()
                     }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), OnItemClickListener, O
     private lateinit var adapter: SearchAdapter
 
     override fun initData() {
+        list.clear()
         list.addAll(mainModel.searchListCache)
         adapter = SearchAdapter(requireContext(), list, this, this)
         mBinding.apply {

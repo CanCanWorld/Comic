@@ -1,7 +1,7 @@
 package com.zrq.comic.util
 
 object Constants {
-    const val BASE_URL = "https://api.pingcc.cn"
+    const val BASE_URL = "http://api.pingcc.cn"
 
     ///comic/search/title/***
     const val SEARCH = "/comic/search/title"

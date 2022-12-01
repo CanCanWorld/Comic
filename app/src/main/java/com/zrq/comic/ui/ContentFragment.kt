@@ -3,6 +3,7 @@ package com.zrq.comic.ui
 import android.annotation.SuppressLint
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -31,6 +32,7 @@ class ContentFragment : BaseFragment<FragmentContentBinding>() {
         mBinding.apply {
             viewPager.adapter = adapter
             viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+            viewPager.offscreenPageLimit = 4
         }
         loadContent()
     }

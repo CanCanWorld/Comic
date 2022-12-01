@@ -1,6 +1,10 @@
 package com.zrq.comic.ui
 
+import android.animation.ObjectAnimator
+import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
@@ -17,18 +21,18 @@ class PicFragment(
         return FragmentPicBinding.inflate(inflater, container, false)
     }
 
-    private val loading by lazy { Loading(requireContext()) }
-
     override fun initData() {
         mBinding.apply {
             tvPage.text = position.toString()
+            val animator = ObjectAnimator.ofFloat(ivLoad, "rotate", 0f, 360f).apply {
+            }
             Glide.with(requireActivity())
                 .load(url)
+                .placeholder(R)
                 .into(object : ImageViewTarget<Drawable>(image) {
 
                     override fun onLoadStarted(placeholder: Drawable?) {
                         super.onLoadStarted(placeholder)
-                        loading.show()
                     }
 
                     override fun onResourceReady(
@@ -40,7 +44,6 @@ class PicFragment(
 
                     override fun setResource(resource: Drawable?) {
                         image.setImageDrawable(resource)
-                        loading.dismiss()
                     }
 
                 })
@@ -51,6 +54,8 @@ class PicFragment(
     }
 
     companion object {
+        const val TAG = "PicFragment"
+
         fun newInstance(position: Int, url: String) = PicFragment(position, url)
     }
 
