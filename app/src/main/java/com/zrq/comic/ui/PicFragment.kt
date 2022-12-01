@@ -6,10 +6,13 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.ImageViewTarget
 import com.bumptech.glide.request.transition.Transition
+import com.zrq.comic.R
 import com.zrq.comic.databinding.FragmentPicBinding
 import com.zrq.comic.view.Loading
 
@@ -24,11 +27,11 @@ class PicFragment(
     override fun initData() {
         mBinding.apply {
             tvPage.text = position.toString()
-            val animator = ObjectAnimator.ofFloat(ivLoad, "rotate", 0f, 360f).apply {
-            }
+            val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.loading_animation)
+            // 使用ImageView显示动画
+            ivLoad.startAnimation(animation)
             Glide.with(requireActivity())
                 .load(url)
-                .placeholder(R)
                 .into(object : ImageViewTarget<Drawable>(image) {
 
                     override fun onLoadStarted(placeholder: Drawable?) {
@@ -43,6 +46,7 @@ class PicFragment(
                     }
 
                     override fun setResource(resource: Drawable?) {
+                        ivLoad.visibility = View.GONE
                         image.setImageDrawable(resource)
                     }
 
