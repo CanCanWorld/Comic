@@ -32,7 +32,7 @@ class ContentFragment : BaseFragment<FragmentContentBinding>() {
         mBinding.apply {
             viewPager.adapter = adapter
             viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-            viewPager.offscreenPageLimit = 4
+            viewPager.offscreenPageLimit = 3
         }
         loadContent()
     }

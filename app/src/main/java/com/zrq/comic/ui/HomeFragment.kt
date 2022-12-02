@@ -2,6 +2,7 @@ package com.zrq.comic.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -11,8 +12,10 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.zrq.comic.R
 import com.zrq.comic.adapter.SearchAdapter
@@ -40,6 +43,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), OnItemClickListener, O
             recyclerView.adapter = adapter
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
         }
+        mainModel.chapterListCache.clear()
     }
 
     override fun initEvent() {
@@ -65,6 +69,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), OnItemClickListener, O
                 }
                 false
             }
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                @RequiresApi(Build.VERSION_CODES.P)
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (dy > 40) {
+                        mainModel.setScreen()
+                    }
+                }
+            })
         }
     }
 

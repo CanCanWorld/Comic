@@ -1,14 +1,17 @@
 package com.zrq.comic.ui
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.zrq.comic.R
@@ -30,17 +33,25 @@ class ChapterFragment : BaseFragment<FragmentChapterBinding>(), OnItemClickListe
     private val list = ArrayList<Chapter.DataDTO.ChapterListDTO>()
     private lateinit var adapter: ChapterAdapter
     private var comic: Search.DataDTO? = null
+    private var upSort = true
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun initData() {
         comic = mainModel.comic
         comicId = comic?.comicId ?: ""
         adapter = ChapterAdapter(requireContext(), list, this)
-        loadChapter()
         mBinding.apply {
             tvTitle.title = comic?.title
             rvChapter.adapter = adapter
             rvChapter.layoutManager = LinearLayoutManager(requireContext())
             Glide.with(this@ChapterFragment).load(comic?.cover).into(ivHead)
+        }
+        if (mainModel.chapterListCache.size != 0) {
+            list.clear()
+            list.addAll(mainModel.chapterListCache)
+            adapter.notifyDataSetChanged()
+        } else {
+            loadChapter()
         }
 
     }
@@ -70,11 +81,39 @@ class ChapterFragment : BaseFragment<FragmentChapterBinding>(), OnItemClickListe
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun initEvent() {
+        mBinding.apply {
+            btnSort.setOnClickListener {
+                if (upSort) {
+                    upSort = false
+                    ivSort.setImageResource(R.drawable.ic_baseline_arrow_drop_up_24)
+                    tvSort.text = "倒序"
+                } else {
+                    upSort = true
+                    ivSort.setImageResource(R.drawable.ic_baseline_arrow_drop_down_24)
+                    tvSort.text = "正序"
+                }
+                list.reverse()
+                adapter.notifyDataSetChanged()
+            }
+
+            rvChapter.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                @RequiresApi(Build.VERSION_CODES.P)
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (dy > 40) {
+                        mainModel.setScreen()
+                    }
+                }
+            })
+        }
     }
 
     override fun onItemClick(view: View, position: Int) {
         mainModel.chapterId = list[position].chapterId
+        mainModel.chapterListCache.clear()
+        mainModel.chapterListCache.addAll(list)
         Navigation.findNavController(requireActivity(), R.id.fragment_container)
             .navigate(R.id.contentFragment)
     }
